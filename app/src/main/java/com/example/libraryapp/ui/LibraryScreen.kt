@@ -1,5 +1,6 @@
 package com.example.libraryapp.ui
 
+import android.content.Context
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,14 +22,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.libraryapp.data.AppDatabase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
-    libraryViewModel: LibraryViewModel = viewModel()
+    context: Context
 ) {
-    val libraryUiState by libraryViewModel.uiState.collectAsState()
-    val bookList by libraryViewModel.getBookList().collectAsState(emptyList())
+    val db = AppDatabase.getDatabase(context)
+    val factory = LibraryViewModelFactory(db.bookDao())
+
+    val libraryViewModel: LibraryViewModel =
+        viewModel(factory = factory)
+
+    val bookList by libraryViewModel
+        .getBookList()
+        .collectAsState(emptyList())
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -63,8 +72,8 @@ fun LibraryScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewLibraryScreen() {
-    LibraryScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewLibraryScreen() {
+//    LibraryScreen()
+//}

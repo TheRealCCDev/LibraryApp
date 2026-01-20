@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface BookDao {
     @Query(
         """
-            SELECT * FROM book
+            SELECT * FROM Book
         """
     )
     fun getBooks(): Flow<List<Book>>

@@ -12,5 +12,5 @@ class LibraryViewModel(private val bookDao: BookDao) : ViewModel() {
     private val _uiState = MutableStateFlow(LibraryUIState())
     val uiState: StateFlow<LibraryUIState> = _uiState.asStateFlow()
 
-    fun getBookList():  Flow<List<Book>> = bookDao.getBooks()
+    fun getBookList(): Flow<List<Book>> = bookDao.getBooks()
 }
