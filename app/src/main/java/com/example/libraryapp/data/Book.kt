@@ -17,5 +17,5 @@ data class Book(
     val author : String,
     @NonNull
     @ColumnInfo(name = "read")
-    val read : Boolean
+    val isRead : Boolean
 )
