@@ -12,4 +12,7 @@ interface BookDao {
         """
     )
     fun getBooks(): Flow<List<Book>>
+
+    @Query("UPDATE Book SET read = :isRead WHERE id = :bookId")
+    suspend fun setBookRead(bookId: Int, isRead: Boolean)
 }

@@ -76,7 +76,7 @@ fun LibraryScreen(
                     modifier = Modifier
                         .padding(16.dp),
                 ) {
-                    Libro(book)
+                    Libro(book, libraryViewModel)
                 }
             }
         }
@@ -84,7 +84,9 @@ fun LibraryScreen(
 }
 
 @Composable
-fun Libro(book: Book) {
+fun Libro(
+    book: Book,
+    libraryViewModel: LibraryViewModel) {
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
@@ -109,7 +111,7 @@ fun Libro(book: Book) {
 
         IconButton(
             onClick = {
-                // TODO
+                libraryViewModel.setBookRead(book.id, !book.isRead)
             },
             modifier = Modifier
                 .padding(4.dp)
@@ -124,11 +126,3 @@ fun Libro(book: Book) {
         }
     }
 }
-
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewLibraryScreen() {
-//    LibraryScreen()
-//}
