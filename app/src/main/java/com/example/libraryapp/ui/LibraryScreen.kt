@@ -20,16 +20,20 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,14 +44,20 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.libraryapp.data.AppDatabase
 import com.example.libraryapp.data.Book
+import com.example.libraryapp.data.ThemeManager
+import kotlinx.coroutines.launch
+import com.example.libraryapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     context: Context
 ) {
+    val themeManager = remember { ThemeManager(context) }
     val db = AppDatabase.getDatabase(context)
-    val factory = LibraryViewModelFactory(db.bookDao())
+    val factory = LibraryViewModelFactory(db.bookDao(), themeManager)
+    val isDark by themeManager.isDarkMode.collectAsState(initial = false)
+    val scope = rememberCoroutineScope()
 
     val libraryViewModel: LibraryViewModel =
         viewModel(factory = factory)
@@ -60,7 +70,19 @@ fun LibraryScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Library App") }
+                title = { Text("Library App") },
+                actions = {
+                    IconButton(onClick = {
+                        scope.launch { themeManager.toggleTheme(!isDark) }
+                    }) {
+                        Icon(
+                            painter = painterResource(
+                                id = if (isDark) R.drawable.light_mode_24px else R.drawable.dark_mode_24px
+                            ),
+                            contentDescription = "Cambiar Tema"
+                        )
+                    }
+                }
             )
         }
     ) { innnerPadding ->
