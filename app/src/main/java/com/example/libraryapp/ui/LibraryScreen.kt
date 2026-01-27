@@ -4,12 +4,9 @@ import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,13 +15,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -36,22 +31,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.libraryapp.R
 import com.example.libraryapp.data.AppDatabase
 import com.example.libraryapp.data.Book
 import com.example.libraryapp.data.ThemeManager
 import kotlinx.coroutines.launch
-import com.example.libraryapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,41 +112,43 @@ fun Libro(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
         ),
-        modifier = Modifier
-            .size(width = 340.dp, height = 150.dp)
     ) {
-        Text(
-            text = book.title,
-            modifier = Modifier
-                .padding(8.dp),
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp
-        )
-        Text(
-            text = book.author,
-            modifier = Modifier
-                .padding(8.dp),
-            textAlign = TextAlign.Center,
-        )
-
-        IconButton(
-            onClick = {
-                libraryViewModel.setBookRead(book.id, !book.isRead)
-            },
-            modifier = Modifier
-                .padding(4.dp)
+        Column(
+            modifier = Modifier.padding(8.dp)
         ) {
-            Icon(
+            Text(
+                text = book.title,
                 modifier = Modifier
-                    .size(40.dp),
-                imageVector = if (book.isRead) Icons.Filled.CheckCircle else Icons.Outlined.CheckCircle,
-                contentDescription = "Marcar como leído",
-                tint = if (book.isRead) Color(0xFF4CAF50) else Color.Gray
+                    .padding(8.dp),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
             )
-        }
+            Text(
+                text = book.author,
+                modifier = Modifier
+                    .padding(8.dp),
+                textAlign = TextAlign.Center,
+            )
 
-        DocumentPickerScreen(context)
+            IconButton(
+                onClick = {
+                    libraryViewModel.setBookRead(book.id, !book.isRead)
+                },
+                modifier = Modifier
+                    .padding(4.dp)
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(40.dp),
+                    imageVector = if (book.isRead) Icons.Filled.CheckCircle else Icons.Outlined.CheckCircle,
+                    contentDescription = "Marcar como leído",
+                    tint = if (book.isRead) Color(0xFF4CAF50) else Color.Gray
+                )
+            }
+
+            DocumentPickerScreen(context)
+        }
     }
 }
 
