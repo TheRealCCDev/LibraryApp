@@ -15,4 +15,7 @@ interface BookDao {
 
     @Query("UPDATE Book SET read = :isRead WHERE id = :bookId")
     suspend fun setBookRead(bookId: Int, isRead: Boolean)
+
+    @Query("UPDATE Book SET file = :file WHERE id = :bookId")
+    suspend fun setBookFile(bookId: Int, file: String)
 }
