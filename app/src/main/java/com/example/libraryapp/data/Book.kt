@@ -1,6 +1,7 @@
 package com.example.libraryapp.data
 
 import androidx.annotation.NonNull
+import androidx.annotation.Nullable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -17,5 +18,8 @@ data class Book(
     val author : String,
     @NonNull
     @ColumnInfo(name = "read")
-    val isRead : Boolean
+    val isRead : Boolean,
+    @Nullable
+    @ColumnInfo(name = "file")
+    val file : String?
 )
