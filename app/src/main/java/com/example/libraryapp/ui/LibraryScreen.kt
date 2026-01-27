@@ -165,6 +165,7 @@ fun DocumentPickerScreen(
     bookId: Int,
     viewModel: LibraryViewModel
 ) {
+    // Launches the File selector and retrieves the file Uri
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->

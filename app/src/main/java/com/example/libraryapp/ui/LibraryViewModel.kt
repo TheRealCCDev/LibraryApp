@@ -46,16 +46,21 @@ class LibraryViewModel(
     fun saveBookFile(context: Context, uri: Uri, bookId: Int) {
         viewModelScope.launch {
             try {
+                // Gets the file name
                 val fileName = getFileName(context, uri) ?: "libro_$bookId"
 
+                // Sets the file
                 val destinationFile = File(context.filesDir, fileName)
 
+                // Copies the selected file to internal storage to bypass temporary URI permissions
+                // and ensure the file is permanently available for local use and future S3 backups.
                 context.contentResolver.openInputStream(uri)?.use { input ->
                     destinationFile.outputStream().use { output ->
                         input.copyTo(output)
                     }
                 }
 
+                // Set file Uri to the book
                 bookDao.setBookFile(bookId, destinationFile.absolutePath)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -63,6 +68,7 @@ class LibraryViewModel(
         }
     }
 
+    // Returns the file name given the file Uri
     private fun getFileName(context: Context, uri: Uri): String? {
         var name: String? = null
         context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
