@@ -155,17 +155,21 @@ fun Libro(
             )
         }
 
-        DocumentPickerScreen(context)
+        DocumentPickerScreen(context, book.id, libraryViewModel)
     }
 }
 
 @Composable
-fun DocumentPickerScreen(context: Context) {
+fun DocumentPickerScreen(
+    context: Context,
+    bookId: Int,
+    viewModel: LibraryViewModel
+) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            //TODO
+            viewModel.saveBookFile(context, it, bookId)
         }
     }
 

@@ -1,5 +1,7 @@
 package com.example.libraryapp.ui
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.data.Book
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.io.File
 
 class LibraryViewModel(
     private val bookDao: BookDao,
@@ -38,5 +41,36 @@ class LibraryViewModel(
         viewModelScope.launch {
             themeManager.toggleTheme(isDark)
         }
+    }
+
+    fun saveBookFile(context: Context, uri: Uri, bookId: Int) {
+        viewModelScope.launch {
+            try {
+                val fileName = getFileName(context, uri) ?: "libro_$bookId"
+
+                val destinationFile = File(context.filesDir, fileName)
+
+                context.contentResolver.openInputStream(uri)?.use { input ->
+                    destinationFile.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+
+                bookDao.setBookFile(bookId, destinationFile.absolutePath)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun getFileName(context: Context, uri: Uri): String? {
+        var name: String? = null
+        context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+            if (cursor.moveToFirst() && nameIndex != -1) {
+                name = cursor.getString(nameIndex)
+            }
+        }
+        return name
     }
 }
