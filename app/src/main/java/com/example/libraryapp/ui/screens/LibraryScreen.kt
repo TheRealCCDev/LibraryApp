@@ -1,5 +1,6 @@
-package com.example.libraryapp.ui
+package com.example.libraryapp.ui.screens
 
+import android.app.Application
 import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -44,16 +45,22 @@ import com.example.libraryapp.R
 import com.example.libraryapp.data.AppDatabase
 import com.example.libraryapp.data.Book
 import com.example.libraryapp.data.ThemeManager
+import com.example.libraryapp.ui.viewmodel.LibraryViewModel
+import com.example.libraryapp.ui.viewmodel.LibraryViewModelFactory
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LibraryScreen(
-    context: Context
-) {
+fun LibraryScreen() {
+    // Create context and application
+    val context = LocalContext.current
+    val application = context.applicationContext as Application
+
     val themeManager = remember { ThemeManager(context) }
     val db = AppDatabase.getDatabase(context)
-    val factory = LibraryViewModelFactory(db.bookDao(), themeManager)
+
+    val factory = LibraryViewModelFactory(application, db.bookDao(), themeManager)
+
     val isDark by themeManager.isDarkMode.collectAsState(initial = false)
     val scope = rememberCoroutineScope()
 
@@ -106,7 +113,8 @@ fun LibraryScreen(
 @Composable
 fun Libro(
     book: Book,
-    libraryViewModel: LibraryViewModel) {
+    libraryViewModel: LibraryViewModel
+) {
 
     val context = LocalContext.current
 

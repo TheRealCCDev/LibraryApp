@@ -73,6 +73,9 @@ dependencies {
     // DataStore por si guardas preferencias de usuario
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
+    // WORKMANAGER
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
     // --- TESTING ---
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

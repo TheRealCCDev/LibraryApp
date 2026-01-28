@@ -1,4 +1,4 @@
-package com.example.libraryapp.ui
+package com.example.libraryapp.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
