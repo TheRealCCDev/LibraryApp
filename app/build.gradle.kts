@@ -57,6 +57,7 @@ dependencies {
     // Usamos las versiones del catálogo (toml) que configuramos antes
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.googleid)
     ksp(libs.androidx.room.compiler) // Procesador de anotaciones
 
     // --- VIEWMODEL Y CICLO DE VIDA ---
@@ -80,4 +81,10 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Google Identity Services (Google ID)
+    // Google Play Services Auth (para login con Google)
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
+    implementation("androidx.navigation:navigation-compose:2.7.0")
 }
