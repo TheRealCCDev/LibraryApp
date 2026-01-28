@@ -1,21 +1,26 @@
 package com.example.libraryapp.ui.viewmodel
 
 import android.app.Application
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.example.libraryapp.data.AppDatabase
 import com.example.libraryapp.data.Book
 import com.example.libraryapp.data.BookDao
 import com.example.libraryapp.data.ThemeManager
 import com.example.libraryapp.data.workers.UploadBooksWorker
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -28,9 +33,31 @@ class LibraryViewModel(
 
     init {
         scheduleDailyUpload()
+
+//        val testRequest = OneTimeWorkRequestBuilder<UploadBooksWorker>().build()
+//        WorkManager.getInstance(getApplication()).enqueue(testRequest)
+
+        viewModelScope.launch {
+            val db = AppDatabase.getDatabase(getApplication())
+            val bookDao = db.bookDao()
+
+            // Obtenemos la lista real de archivos
+            val fileList: List<String?> = bookDao.getFiles().first() // puede haber nulls
+            fileList.forEach { path ->
+                if (!path.isNullOrEmpty()) {
+                    val file = File(path)
+                    Log.i("FileCheck", "Archivo: $path, existe: ${file.exists()}")
+                } else {
+                    Log.w("FileCheck", "Se encontró un path nulo en la base de datos")
+                }
+            }
+
+        }
     }
 
     fun getBookList(): Flow<List<Book>> = bookDao.getBooks()
+
+    fun getFileList(): Flow<List<String>> = bookDao.getFiles()
 
     fun setBookRead(bookId: Int, isRead: Boolean)  {
         viewModelScope.launch { // Se usa una corrutina para que la UI no tenga que hacerlo

@@ -21,4 +21,11 @@ interface BookDao {
     // Sets the Uri to a specific book
     @Query("UPDATE Book SET file = :file WHERE id = :bookId")
     suspend fun setBookFile(bookId: Int, file: String)
+
+    @Query(
+        """
+            SELECT file FROM Book
+        """
+    )
+    fun getFiles(): Flow<List<String>>
 }

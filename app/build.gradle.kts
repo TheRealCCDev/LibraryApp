@@ -90,4 +90,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
     implementation("androidx.navigation:navigation-compose:2.7.0")
+
+    implementation("aws.sdk.kotlin:s3:0.20.3-beta")
 }
