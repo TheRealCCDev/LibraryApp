@@ -120,42 +120,44 @@ fun Libro(
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
-        ),
-        modifier = Modifier
-            .size(width = 340.dp, height = 150.dp)
+        )
     ) {
-        Text(
-            text = book.title,
-            modifier = Modifier
-                .padding(8.dp),
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp
-        )
-        Text(
-            text = book.author,
-            modifier = Modifier
-                .padding(8.dp),
-            textAlign = TextAlign.Center,
-        )
-
-        IconButton(
-            onClick = {
-                libraryViewModel.setBookRead(book.id, !book.isRead)
-            },
-            modifier = Modifier
-                .padding(4.dp)
+        Column(
+            modifier = Modifier.padding(16.dp)
         ) {
-            Icon(
+            Text(
+                text = book.title,
                 modifier = Modifier
-                    .size(40.dp),
-                imageVector = if (book.isRead) Icons.Filled.CheckCircle else Icons.Outlined.CheckCircle,
-                contentDescription = "Marcar como leído",
-                tint = if (book.isRead) Color(0xFF4CAF50) else Color.Gray
+                    .padding(8.dp),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
             )
-        }
+            Text(
+                text = book.author,
+                modifier = Modifier
+                    .padding(8.dp),
+                textAlign = TextAlign.Center,
+            )
 
-        DocumentPickerScreen(context, book.id, libraryViewModel)
+            IconButton(
+                onClick = {
+                    libraryViewModel.setBookRead(book.id, !book.isRead)
+                },
+                modifier = Modifier
+                    .padding(4.dp)
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(40.dp),
+                    imageVector = if (book.isRead) Icons.Filled.CheckCircle else Icons.Outlined.CheckCircle,
+                    contentDescription = "Marcar como leído",
+                    tint = if (book.isRead) Color(0xFF4CAF50) else Color.Gray
+                )
+            }
+
+            DocumentPickerScreen(context, book.id, libraryViewModel)
+        }
     }
 }
 
