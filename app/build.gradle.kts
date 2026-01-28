@@ -53,6 +53,13 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3) // Material 3 para los componentes
 
+    // --- CAMERA ---
+    implementation("com.google.accompanist:accompanist-permissions:0.28.0")
+    val camerax_version = "1.3.0-rc01"
+    implementation("androidx.camera:camera-camera2:${camerax_version}")
+    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+    implementation("androidx.camera:camera-view:${camerax_version}")
+
     // --- ROOM (Base de Datos) ---
     // Usamos las versiones del catálogo (toml) que configuramos antes
     implementation(libs.androidx.room.runtime)
