@@ -9,6 +9,13 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -125,7 +132,11 @@ fun LibraryScreen() {
                         modifier = Modifier
                             .padding(16.dp),
                     ) {
-                        Libro(permissionState, book, libraryViewModel, onCameraClick = { showCamera = true })
+                        Libro(
+                            permissionState,
+                            book,
+                            libraryViewModel,
+                            onCameraClick = { showCamera = true })
                     }
                 }
             }
@@ -133,7 +144,7 @@ fun LibraryScreen() {
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun Libro(
     permissionState: PermissionState,
@@ -165,7 +176,6 @@ fun Libro(
                     .padding(8.dp),
                 textAlign = TextAlign.Center,
             )
-
             IconButton(
                 onClick = {
                     libraryViewModel.setBookRead(book.id, !book.isRead)
@@ -173,13 +183,28 @@ fun Libro(
                 modifier = Modifier
                     .padding(4.dp)
             ) {
-                Icon(
-                    modifier = Modifier
-                        .size(40.dp),
-                    imageVector = if (book.isRead) Icons.Filled.CheckCircle else Icons.Outlined.CheckCircle,
-                    contentDescription = "Marcar como leído",
-                    tint = if (book.isRead) Color(0xFF4CAF50) else Color.Gray
-                )
+                AnimatedContent(
+                    targetState = book.isRead,
+                    transitionSpec = {
+                        val direction =
+                            if (targetState) AnimatedContentTransitionScope.SlideDirection.Left
+                            else AnimatedContentTransitionScope.SlideDirection.Right
+
+                        slideIntoContainer(direction, animationSpec = tween(500)) + fadeIn() with
+                                slideOutOfContainer(
+                                    direction,
+                                    animationSpec = tween(500)
+                                ) + fadeOut()
+                    },
+                    label = "slideIconAnimation"
+                ) { isReadAnimated ->
+                    Icon(
+                        modifier = Modifier.size(40.dp),
+                        imageVector = if (isReadAnimated) Icons.Filled.CheckCircle else Icons.Outlined.CheckCircle,
+                        contentDescription = null,
+                        tint = if (isReadAnimated) Color(0xFF4CAF50) else Color.Gray
+                    )
+                }
             }
 
             Row(
@@ -217,7 +242,7 @@ fun DocumentPickerScreen(
         }
     }
 
-    Button(onClick = { launcher.launch("*/*")}) {
+    Button(onClick = { launcher.launch("*/*") }) {
         Text("Seleccionar libro")
     }
 }
@@ -230,7 +255,7 @@ fun CameraScreen(onBackPressed: () -> Unit) {
     cameraController.bindToLifecycle(lifecycle)
 
     Box(modifier = Modifier.fillMaxSize()) {
-        AndroidView(factory = {context ->
+        AndroidView(factory = { context ->
             val previewView = PreviewView(context).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -240,7 +265,11 @@ fun CameraScreen(onBackPressed: () -> Unit) {
             previewView.controller = cameraController
             previewView
         })
-        Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
             IconButton(
                 onClick = onBackPressed,
                 modifier = Modifier

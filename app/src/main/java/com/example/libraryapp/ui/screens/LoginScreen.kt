@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -54,56 +55,67 @@ fun LoginScreen(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
 
     Surface(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(32.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(32.dp),
+                .padding(32.dp)
         ) {
             Text(
                 text = "Library App",
-                fontSize = 64.sp,
+                fontSize = 32.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.TopCenter)
             )
-            Button(
+            Column(
                 modifier = Modifier.align(Alignment.Center),
-                onClick = {
-                    val signInWithGoogleOption = GetSignInWithGoogleOption
-                        .Builder(serverClientId = webClientId)
-                        .setNonce(generateSecureRandomNonce())
-                        .build()
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(
+                    onClick = {
+                        val signInWithGoogleOption = GetSignInWithGoogleOption
+                            .Builder(serverClientId = webClientId)
+                            .setNonce(generateSecureRandomNonce())
+                            .build()
 
-                    val request = GetCredentialRequest.Builder()
-                        .addCredentialOption(signInWithGoogleOption)
-                        .build()
+                        val request = GetCredentialRequest.Builder()
+                            .addCredentialOption(signInWithGoogleOption)
+                            .build()
 
-                    coroutineScope.launch {
-                        val e = signIn(request, context)
-                        if (e == null) {
-                            // Login correcto → navegar a otra pantalla
-                            navController.navigate("home") {
-                                popUpTo("login") { inclusive = true } // elimina la pantalla de login
+                        coroutineScope.launch {
+                            val e = signIn(request, context)
+                            if (e == null) {
+                                // Login correcto → navegar a otra pantalla
+                                navController.navigate("home") {
+                                    popUpTo("login") { inclusive = true } // elimina la pantalla de login
+                                }
                             }
                         }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(4.dp),
+                    border = BorderStroke(1.dp, Color.LightGray)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_google),
+                        contentDescription = "Google logo",
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Iniciar sesión con Google")
+                }
+                Button(
+                    onClick = {
+                        navController.navigate("home")
                     }
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(4.dp),
-                border = BorderStroke(1.dp, Color.LightGray)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_google),
-                    contentDescription = "Google logo",
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Iniciar sesión con Google")
+                ) {
+                    Text("ByPass Login")
+                }
             }
         }
     }
